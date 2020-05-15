@@ -3,6 +3,12 @@
 declare(strict_types=1);
 require('./app.conf.php');
 
+function endSession()
+{
+    session_destroy();
+    exit;
+}
+
 function generateToken()
 {
     $_SESSION['csrf'] = md5(uniqid());
@@ -14,7 +20,7 @@ function validateSendMail()
 {
     $json = json_encode($_SESSION);
     echo $json;
-    // session_destroy();
+    endSession();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -30,6 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     // Route: Validate security and send email
     if ($req === "/mail") validateSendMail();
+
+    // Route: Destroy active session
+    if ($req === "/session") endSession();
 }
 
 if (isset($_POST['origin'], $_POST['csrf'])) {
