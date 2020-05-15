@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+require('./app.conf.php');
 
 function generateToken()
 {
@@ -9,7 +10,7 @@ function generateToken()
     echo $json;
 }
 
-function validateSend()
+function validateSendMail()
 {
     $json = json_encode($_SESSION);
     echo $json;
@@ -19,16 +20,16 @@ function validateSend()
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     if (!isset($_POST['origin']) || empty($_POST['origin'])) exit();
     if (!isset($_POST['apikey']) || empty($_POST['apikey'])) exit();
-    if ($_POST['origin'] !== "localhost") exit();
-    if ($_POST['apikey'] !== "1235") exit();
+    if ($_POST['origin'] !== $ALLOWED_ORIGIN) exit();
+    if ($_POST['apikey'] !== $VALID_API_KEY) exit();
     $req = $_SERVER['REQUEST_URI'];
     session_start();
 
-    // Route: Generate new csrf-token 
-    if ($req === "/generate") generateToken();
+    // Route: Generate new csrf-token
+    if ($req === "/token") generateToken();
 
     // Route: Validate security and send email
-    if ($req === "/send") validateSend();
+    if ($req === "/mail") validateSendMail();
 }
 
 if (isset($_POST['origin'], $_POST['csrf'])) {
