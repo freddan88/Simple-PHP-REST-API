@@ -14,14 +14,14 @@ function validateSendMail()
 {
     $json = json_encode($_SESSION);
     echo $json;
-    session_destroy();
+    // session_destroy();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    if (!isset($_POST['origin']) || empty($_POST['origin'])) exit();
-    if (!isset($_POST['apikey']) || empty($_POST['apikey'])) exit();
-    if ($_POST['origin'] !== $ALLOWED_ORIGIN) exit();
-    if ($_POST['apikey'] !== $VALID_API_KEY) exit();
+    if (!isset($_POST['origin']) || empty($_POST['origin'])) exit;
+    if (!isset($_POST['apikey']) || empty($_POST['apikey'])) exit;
+    if ($_POST['origin'] !== $ALLOWED_ORIGIN) exit;
+    if ($_POST['apikey'] !== $VALID_API_KEY) exit;
     $req = $_SERVER['REQUEST_URI'];
     session_start();
 
