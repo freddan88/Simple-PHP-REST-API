@@ -11,7 +11,7 @@ function endSession()
 
 function generateToken()
 {
-    $_SESSION['csrf'] = md5(uniqid());
+    $_SESSION['csrf'] = bin2hex(random_bytes(32));
     $json = json_encode($_SESSION);
     echo $json;
 }
