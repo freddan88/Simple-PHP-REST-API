@@ -29,6 +29,7 @@ function validateSendMail()
     if ($_POST['csrf'] !== $_SESSION['csrf']) endSession();
     $_SESSION['errors'] = [];
 
+    if (!isset($_POST['email_to']) || empty($_POST['email_to'])) endSession();
     if (!isset($_POST['message']) || empty($_POST['message'])) addError("message");
     if (!isset($_POST['fullname']) || empty($_POST['fullname'])) addError("fullname");
     if (!isset($_POST['email_from']) || empty($_POST['email_from'])) addError("email_from");
@@ -38,19 +39,29 @@ function validateSendMail()
         endSession();
     }
 
+    $origin = trim(filter_var($_POST['origin'], FILTER_SANITIZE_STRING));
     $message = trim(filter_var($_POST['message'], FILTER_SANITIZE_STRING));
+    $email_to = trim(filter_var($_POST['email_to'], FILTER_SANITIZE_EMAIL));
     $fullname = trim(filter_var($_POST['fullname'], FILTER_SANITIZE_STRING));
     $email_from = trim(filter_var($_POST['email_from'], FILTER_SANITIZE_EMAIL));
-    $body = $message . "\n" . "From: " . $fullname . "<" . $email_from . ">";
+    $body = $message . "\n\n" . "From: " . $fullname . "<" . $email_from . ">";
     $body = wordwrap($body, 80);
 
-    try {
-        mail("fredrik@leemann.se", "New message from website", $body);
-    } catch (\Throwable $th) {
-        //throw $th;
-    }
+    $status = mail($email_to, "New message from: " . $origin, $body);
 
-    echo json_encode($_SESSION);
+    if ($status === false) {
+        $json = [
+            "message" => "Failed to send message",
+            "success" => false
+        ];
+        echo json_encode($json);
+        endSession();
+    }
+    $json = [
+        "message" => "Successfully sent message",
+        "success" => true
+    ];
+    echo json_encode($json);
     endSession();
 }
 
