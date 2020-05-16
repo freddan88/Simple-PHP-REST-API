@@ -94,20 +94,22 @@ function validateSendMail()
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    if (!isset($_POST['origin']) || empty($_POST['origin'])) exit;
+    if (!isset($_POST['domain']) || empty($_POST['domain'])) exit;
     if (!isset($_POST['apikey']) || empty($_POST['apikey'])) exit;
-    if ($_POST['origin'] !== $ALLOWED_ORIGIN) exit;
-    if ($_POST['apikey'] !== $VALID_API_KEY) exit;
-    $uri = $_SERVER['REQUEST_URI'];
-    $end = end(explode("/", $uri));
-    $req = "/" . $end;
+    if (in_array($_POST['domain'], $ALLOWED_DOMAINS)) {
+        if ($_POST['apikey'] === $VALID_API_KEY) {
+            $uri = $_SERVER['REQUEST_URI'];
+            $end = end(explode("/", $uri));
+            $req = "/" . $end;
 
-    // Route: Generate new csrf-token
-    if ($req === "/token") generateToken();
+            // Route: Generate new csrf-token
+            if ($req === "/token") generateToken();
 
-    // Route: Validate security and send email
-    if ($req === "/mail") validateSendMail();
+            // Route: Validate security and send email
+            if ($req === "/mail") validateSendMail();
 
-    // Route: Destroy active session
-    if ($req === "/session") endSession();
+            // Route: Destroy active session
+            if ($req === "/session") endSession();
+        }
+    }
 }
