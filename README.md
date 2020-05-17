@@ -50,6 +50,8 @@
 
 #### OBS! Only tested with web servers like Apache and PHP:s built in
 
+> In order to send emails php.ini needs to be configured to use a mail-server
+
 ### Example code client
 
 ```Javascript
