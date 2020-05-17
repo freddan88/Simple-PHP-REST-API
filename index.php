@@ -1,6 +1,9 @@
 <?php
 
 declare(strict_types=1);
+
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: content-type");
 require('./app.conf.php');
 
 function getDatetimeNow()
