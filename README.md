@@ -50,7 +50,13 @@
 
 #### OBS! Only tested with web servers like Apache and PHP:s built in
 
-> In order to send emails php.ini needs to be configured to use a mail-server
+> In order to send emails php.ini needs to be configured to use a mail-server or sendmail-program
+
+### Links
+
+-   [How to Sendmail in PHP - Dibya Sahoo](https://pepipost.com/tutorials/sendmail-in-php-complete-guide)
+-   [PHP.NET: .INI Configuration for emails](https://www.php.net/manual/en/mail.configuration.php)
+-   [Send email from Localhost - phpBasics](https://www.youtube.com/watch?v=4_NP_WYFmIM&list=LLr-xGBx3NL3VGbdjDL4BuNw&index=2&t=0s)
 
 ### Example code client
 
