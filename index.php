@@ -30,7 +30,11 @@ function generateToken()
 {
     session_start();
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
-    echo json_encode($_SESSION);
+    $json = [
+        "csrf" => $_SESSION['csrf'],
+        "success" => true
+    ];
+    echo json_encode($json);
 }
 
 function validateSendMail()
