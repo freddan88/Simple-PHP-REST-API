@@ -13,7 +13,7 @@
 
 ### Functionalities:
 
-1. Security checks on api key and originating
+1. Security checks of api key and origin
 2. Will generate and send CSRF-token to client
 3. Validation and sanitization of data from user
 4. Error messages are sent back to client as json
