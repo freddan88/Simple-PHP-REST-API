@@ -9,7 +9,7 @@
 |   Donate: | [paypal.me/freddan88](https://www.paypal.me/freddan88)        |
 |   GitHub: | [github.com/freddan88](https://github.com/freddan88)          |
 
-#### Post formdata and send emails by using the built in function in PHP
+#### Post formdata and send emails by using the built in mail function in PHP
 
 ### Functionalities:
 
@@ -57,6 +57,7 @@
 -   [How to Sendmail in PHP - Dibya Sahoo](https://pepipost.com/tutorials/sendmail-in-php-complete-guide)
 -   [PHP.NET: .INI Configuration for emails](https://www.php.net/manual/en/mail.configuration.php)
 -   [Send email from Localhost - phpBasics](https://www.youtube.com/watch?v=4_NP_WYFmIM&list=LLr-xGBx3NL3VGbdjDL4BuNw&index=2&t=0s)
+-   [Download sendmail for Windows](https://www.glob.com.au/sendmail)
 
 ### Example code client
 
