@@ -21,14 +21,12 @@ function addError($message)
 
 function endSession()
 {
-    session_start();
     session_destroy();
     exit;
 }
 
 function generateToken()
 {
-    session_start();
     $_SESSION['csrf'] = bin2hex(random_bytes(64));
     $json = [
         "csrf" => $_SESSION['csrf']
@@ -38,7 +36,6 @@ function generateToken()
 
 function validateSendMail()
 {
-    session_start();
     if (!isset($_POST['csrf']) || empty($_POST['csrf'])) endSession();
     if ($_POST['csrf'] !== $_SESSION['csrf']) endSession();
     $_SESSION['errors'] = [];
@@ -109,8 +106,10 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     if (in_array($_POST['domain'], $ALLOWED_DOMAINS)) {
         if ($_POST['apikey'] === $VALID_API_KEY) {
             $uri = $_SERVER['REQUEST_URI'];
-            $end = end(explode("/", $uri));
+            $exp = explode("/", $uri);
+            $end = end($exp);
             $req = "/" . $end;
+            session_start();
 
             // Route: Generate new csrf-token
             if ($req === "/token") generateToken();
