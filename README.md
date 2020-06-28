@@ -9,7 +9,7 @@
 |   Donate: | [paypal.me/freddan88](https://www.paypal.me/freddan88)        |
 |   GitHub: | [github.com/freddan88](https://github.com/freddan88)          |
 
-#### Post formdata and send emails by using the built in function in PHP
+#### Post formdata and send emails by using the built in mail function in PHP
 
 ### Functionalities:
 
