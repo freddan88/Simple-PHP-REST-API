@@ -36,6 +36,7 @@ function generateToken()
 
 function validateSendMail()
 {
+    if (!isset($_SESSION['csrf']) || empty($_SESSION)) endSession();
     if (!isset($_POST['csrf']) || empty($_POST['csrf'])) endSession();
     if ($_POST['csrf'] !== $_SESSION['csrf']) endSession();
     $_SESSION['errors'] = [];
