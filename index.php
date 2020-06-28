@@ -29,10 +29,9 @@ function endSession()
 function generateToken()
 {
     session_start();
-    $_SESSION['csrf'] = bin2hex(random_bytes(32));
+    $_SESSION['csrf'] = bin2hex(random_bytes(64));
     $json = [
-        "csrf" => $_SESSION['csrf'],
-        "success" => true
+        "csrf" => $_SESSION['csrf']
     ];
     echo json_encode($json);
 }
@@ -59,7 +58,11 @@ function validateSendMail()
     if (!filter_var($email_from, FILTER_VALIDATE_EMAIL)) addError("Not a valid email address");
 
     if (count($_SESSION['errors']) > 0) {
-        echo json_encode($_SESSION);
+        $json = [
+            "messages" => $_SESSION['errors'],
+            "success" => false
+        ];
+        echo json_encode($json);
         endSession();
     }
 
@@ -86,14 +89,14 @@ function validateSendMail()
 
     if ($status === false) {
         $json = [
-            "message" => "Message failed to send",
+            "messages" => ["Message failed to send"],
             "success" => false
         ];
         echo json_encode($json);
         endSession();
     }
     $json = [
-        "message" => "Message sent successfully",
+        "messages" => ["Message sent successfully"],
         "success" => true
     ];
     echo json_encode($json);
