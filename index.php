@@ -14,9 +14,13 @@ function getDatetimeNow()
     return $datetime->format('Y-m-d H:i');
 }
 
-function addError($message)
+function addError($message, $field)
 {
-    array_push($_SESSION['errors'], $message);
+    $json = [
+        "message" => $message,
+        "field" => $field
+    ];
+    array_push($_SESSION['errors'], $json);
 }
 
 function endSession()
@@ -42,10 +46,20 @@ function validateSendMail()
     $_SESSION['errors'] = [];
 
     if (!isset($_POST['email_to']) || empty($_POST['email_to'])) endSession();
-    if (!isset($_POST['fullname']) || empty($_POST['fullname'])) addError("Name is missing");
-    if (!isset($_POST['subject']) || empty($_POST['subject'])) addError("Subject is missing");
-    if (!isset($_POST['message']) || empty($_POST['message'])) addError("Message is missing");
-    if (!isset($_POST['email_from']) || empty($_POST['email_from'])) addError("Email is missing");
+    if (!isset($_POST['fullname']) || empty($_POST['fullname'])) addError("Name is missing", "fullname");
+    if (!isset($_POST['subject']) || empty($_POST['subject'])) addError("Subject is missing", "subject");
+    if (!isset($_POST['message']) || empty($_POST['message'])) addError("Message is missing", "message");
+    if (!isset($_POST['email_from']) || empty($_POST['email_from'])) addError("Email is missing", "email_from");
+
+    if (count($_SESSION['errors']) > 0) {
+        $json = [
+            "messages" => $_SESSION['errors'],
+            "type" => "validation",
+            "success" => false
+        ];
+        echo json_encode($json);
+        endSession();
+    }
 
     $subject = trim(filter_var($_POST['subject'], FILTER_SANITIZE_STRING));
     $message = trim(filter_var($_POST['message'], FILTER_SANITIZE_STRING));
@@ -54,15 +68,6 @@ function validateSendMail()
     $email_from = trim(filter_var($_POST['email_from'], FILTER_SANITIZE_EMAIL));
 
     if (!filter_var($email_from, FILTER_VALIDATE_EMAIL)) addError("Not a valid email address");
-
-    if (count($_SESSION['errors']) > 0) {
-        $json = [
-            "messages" => $_SESSION['errors'],
-            "success" => false
-        ];
-        echo json_encode($json);
-        endSession();
-    }
 
     $headers = "From: $fullname <$email_from>\r\n" .
         "MIME-Version: 1.0" . "\r\n" .
@@ -87,14 +92,16 @@ function validateSendMail()
 
     if ($status === false) {
         $json = [
-            "messages" => ["Message failed to send"],
+            "message" => "Message failed to send",
+            "type" => "global",
             "success" => false
         ];
         echo json_encode($json);
         endSession();
     }
     $json = [
-        "messages" => ["Message sent successfully"],
+        "message" => "Message sent successfully",
+        "type" => "global",
         "success" => true
     ];
     echo json_encode($json);
