@@ -67,7 +67,7 @@ function validateSendMail()
     $fullname = trim(filter_var($_POST['fullname'], FILTER_SANITIZE_STRING));
     $email_from = trim(filter_var($_POST['email_from'], FILTER_SANITIZE_EMAIL));
 
-    if (!filter_var($email_from, FILTER_VALIDATE_EMAIL)) addError("Not a valid email address");
+    if (!filter_var($email_from, FILTER_VALIDATE_EMAIL)) addError("Not a valid email address", "email_from");
 
     $headers = "From: $fullname <$email_from>\r\n" .
         "MIME-Version: 1.0" . "\r\n" .
