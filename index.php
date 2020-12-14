@@ -7,9 +7,11 @@ $current_origin = getRemote();
 
 if (in_array($current_origin, $ALLOWED_ORIGINS)) {
     header('Access-Control-Allow-Origin: ' . $current_origin);
+    header("Access-Control-Allow-Headers: content-type");
+    header("Access-Control-Allow-Methods: POST");
+} else {
+    die('{}');
 }
-header("Access-Control-Allow-Headers: content-type");
-header("Access-Control-Allow-Methods: POST");
 
 function endSession()
 {
