@@ -6,7 +6,6 @@
 | --------: | ------------------------------------------------------------- |
 |  WebPage: | [leemann.se/fredrik](http://www.leemann.se/fredrik)           |
 |  YouTube: | [youtube.com/FreLee54](https://www.youtube.com/user/FreLee54) |
-|   Donate: | [paypal.me/freddan88](https://www.paypal.me/freddan88)        |
 |   GitHub: | [github.com/freddan88](https://github.com/freddan88)          |
 
 #### Post formdata and send emails by using the built in mail function in PHP
@@ -30,11 +29,11 @@
 
 | Endpoint | Request Method | Description                   |
 | -------- | -------------- | ----------------------------- |
-| /session | POST           | End current php session       |
 | /token   | POST           | Generate and send csrf-token  |
 | /mail    | POST           | Send email and validate token |
+| /end     | POST           | End current php session       |
 
-#### OBS! Don't know if /session is needed but added it anyway
+#### OBS! Don't know if /end is needed but added it anyway
 
 ### Installation
 
