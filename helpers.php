@@ -26,9 +26,5 @@ function getDatetimeNow()
 
 function addError($message, $field)
 {
-    $json = [
-        "message" => $message,
-        "field" => $field
-    ];
-    array_push($_SESSION['errors'], $json);
+    $_SESSION['errors'] -> $field = $message;
 }

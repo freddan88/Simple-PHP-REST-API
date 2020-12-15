@@ -11,7 +11,7 @@ if (in_array($current_origin, $ALLOWED_ORIGINS)) {
     header("Access-Control-Allow-Headers: X-PINGOTHER, Content-Type");
     header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
 } else {
-    die('{}');
+    exit;
 }
 
 function endSession()
@@ -36,8 +36,8 @@ function validateSendMail()
     if (!isset($_SESSION['csrf']) || empty($_SESSION)) endSession();
     if (!isset($_POST['csrf']) || empty($_POST['csrf'])) endSession();
     if ($_POST['csrf'] !== $_SESSION['csrf']) endSession();
-    $_SESSION['errors'] = [];
-    
+    $_SESSION['errors'] = new stdClass();
+
     if (!isset($_POST['email_from']) || empty($_POST['email_from'])) endSession();
     if (!isset($_POST['name']) || empty($_POST['name'])) addError("Name is missing", "name");
     if (!isset($_POST['subject']) || empty($_POST['subject'])) addError("Subject is missing", "subject");
@@ -49,13 +49,14 @@ function validateSendMail()
     $message = trim(filter_var($_POST['message'], FILTER_SANITIZE_STRING));
     $email_to = trim(filter_var($_POST['email_to'], FILTER_SANITIZE_EMAIL));
     $email_from = trim(filter_var($_POST['email_from'], FILTER_SANITIZE_EMAIL));
-    if (!filter_var($email_to, FILTER_VALIDATE_EMAIL)) addError("Not a valid email address", "email_to");
 
-    if (count($_SESSION['errors']) > 0) {
+    if (!$_SESSION['errors']->email_to) {
+        if (!filter_var($email_to, FILTER_VALIDATE_EMAIL)) addError("Not a valid email address", "email_to");
+    }
+
+    if (count((array)$_SESSION['errors']) > 0) {
         $json = [
-            "messages" => $_SESSION['errors'],
-            "type" => "fields",
-            "success" => false
+            'field_errors' => $_SESSION['errors']
         ];
         echo json_encode($json);
         endSession();
@@ -84,24 +85,26 @@ function validateSendMail()
 
     if (!$email_status) {
         $json = [
-            "message" => "Message failed to send",
-            "type" => "global",
-            "success" => false
+            'global_status' => [
+                "message" => "Message failed to send",
+                "success" => false
+            ]
         ];
         echo json_encode($json);
         endSession();
     }
     $json = [
-        "message" => "Message sent successfully",
-        "type" => "global",
-        "success" => true
+        'global_status' => [
+            "message" => "Message sent successfully",
+            "success" => true
+        ]
     ];
     echo json_encode($json);
     endSession();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    if (!isset($_POST['apikey']) || empty($_POST['apikey'])) die('{KEY}');
+    if (!isset($_POST['apikey']) || empty($_POST['apikey'])) exit;
     if ($_POST['apikey'] === $VALID_API_KEY) {
         $uri = $_SERVER['REQUEST_URI'];
         $exp = explode("/", $uri);
