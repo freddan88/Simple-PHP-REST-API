@@ -6,9 +6,10 @@ require_once('./helpers.php');
 $current_origin = getRemote();
 
 if (in_array($current_origin, $ALLOWED_ORIGINS)) {
+    header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Allow-Origin: ' . $current_origin);
-    header("Access-Control-Allow-Headers: content-type");
-    header("Access-Control-Allow-Methods: POST");
+    header("Access-Control-Allow-Headers: X-PINGOTHER, Content-Type");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
 } else {
     die('{}');
 }
@@ -21,9 +22,11 @@ function endSession()
 
 function generateToken()
 {
+    $SESSION_ID = session_id();
     $_SESSION['csrf'] = bin2hex(random_bytes(64));
     $json = [
-        "csrf" => $_SESSION['csrf']
+        "csrf" => $_SESSION['csrf'],
+        "uuid" => $SESSION_ID
     ];
     echo json_encode($json);
 }
@@ -34,19 +37,19 @@ function validateSendMail()
     if (!isset($_POST['csrf']) || empty($_POST['csrf'])) endSession();
     if ($_POST['csrf'] !== $_SESSION['csrf']) endSession();
     $_SESSION['errors'] = [];
-
-    if (!isset($_POST['email_to']) || empty($_POST['email_to'])) endSession();
+    
+    if (!isset($_POST['email_from']) || empty($_POST['email_from'])) endSession();
     if (!isset($_POST['name']) || empty($_POST['name'])) addError("Name is missing", "name");
     if (!isset($_POST['subject']) || empty($_POST['subject'])) addError("Subject is missing", "subject");
     if (!isset($_POST['message']) || empty($_POST['message'])) addError("Message is missing", "message");
-    if (!isset($_POST['email_from']) || empty($_POST['email_from'])) addError("Email is missing", "email_from");
+    if (!isset($_POST['email_to']) || empty($_POST['email_to'])) addError("Email is missing", "email_to");
 
     $name = trim(filter_var($_POST['name'], FILTER_SANITIZE_STRING));
     $subject = trim(filter_var($_POST['subject'], FILTER_SANITIZE_STRING));
     $message = trim(filter_var($_POST['message'], FILTER_SANITIZE_STRING));
     $email_to = trim(filter_var($_POST['email_to'], FILTER_SANITIZE_EMAIL));
     $email_from = trim(filter_var($_POST['email_from'], FILTER_SANITIZE_EMAIL));
-    if (!filter_var($email_from, FILTER_VALIDATE_EMAIL)) addError("Not a valid email address", "email_from");
+    if (!filter_var($email_to, FILTER_VALIDATE_EMAIL)) addError("Not a valid email address", "email_to");
 
     if (count($_SESSION['errors']) > 0) {
         $json = [
@@ -98,12 +101,15 @@ function validateSendMail()
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    if (!isset($_POST['apikey']) || empty($_POST['apikey'])) die('{}');
+    if (!isset($_POST['apikey']) || empty($_POST['apikey'])) die('{KEY}');
     if ($_POST['apikey'] === $VALID_API_KEY) {
         $uri = $_SERVER['REQUEST_URI'];
         $exp = explode("/", $uri);
         $end = end($exp);
         $req = "/" . $end;
+        if (isset($_POST['uuid'])) {
+            session_id($_POST['uuid']);
+        }
         session_start();
 
         // Route: Generate new csrf-token
