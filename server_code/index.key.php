@@ -52,7 +52,7 @@ function validateSendMail()
     <html>
     <body>
     From: $name<br/>
-    Mail: <a href='mailto:$email_from'>$email_from</a><br/>
+    Mail: <a href='mailto:$email_to'>$email_to</a><br/>
     Date: $date<br/>
     -----
     <br/>
