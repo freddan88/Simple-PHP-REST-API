@@ -20,8 +20,8 @@ function validateSendMail()
     if (!isset($_POST['email_from']) || empty($_POST['email_from'])) exit;
     if (!isset($_POST['name']) || empty($_POST['name'])) $_POST['name'] = 'Anonymous';
     if (!isset($_POST['message']) || empty($_POST['message'])) fieldError("Message is missing", "message", $field_errors);
-    // if (!isset($_POST['email_to']) || empty($_POST['email_to'])) fieldError("Email is missing", "email_to", $field_errors);
-    // if (!isset($_POST['subject']) || empty($_POST['subject'])) fieldError("Subject is missing", "subject", $field_errors);
+    if (!isset($_POST['subject']) || empty($_POST['subject'])) fieldError("Subject is missing", "subject", $field_errors);
+    if (!isset($_POST['email_to']) || empty($_POST['email_to'])) fieldError("Email is missing", "email_to", $field_errors);
     // if (!isset($_POST['name']) || empty($_POST['name'])) fieldError("Name is missing", "name", $field_errors);
 
     $name = trim(filter_var($_POST['name'], FILTER_SANITIZE_STRING));
