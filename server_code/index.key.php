@@ -13,35 +13,15 @@ if (in_array($current_origin, $ALLOWED_ORIGINS)) {
     exit;
 }
 
-function endSession()
-{
-    session_destroy();
-    exit;
-}
-
-function generateToken()
-{
-    $SESSION_ID = session_id();
-    $_SESSION['csrf'] = bin2hex(random_bytes(64));
-    $json = [
-        "csrf" => $_SESSION['csrf'],
-        "uuid" => $SESSION_ID
-    ];
-    echo json_encode($json);
-}
-
 function validateSendMail()
 {
-    if (!isset($_SESSION['csrf']) || empty($_SESSION)) endSession();
-    if (!isset($_POST['csrf']) || empty($_POST['csrf'])) endSession();
-    if ($_POST['csrf'] !== $_SESSION['csrf']) endSession();
-    $_SESSION['errors'] = new stdClass();
+    $field_errors = new stdClass();
 
-    if (!isset($_POST['email_from']) || empty($_POST['email_from'])) endSession();
-    if (!isset($_POST['name']) || empty($_POST['name'])) addError("Name is missing", "name");
-    if (!isset($_POST['subject']) || empty($_POST['subject'])) addError("Subject is missing", "subject");
-    if (!isset($_POST['message']) || empty($_POST['message'])) addError("Message is missing", "message");
-    if (!isset($_POST['email_to']) || empty($_POST['email_to'])) addError("Email is missing", "email_to");
+    if (!isset($_POST['email_from']) || empty($_POST['email_from'])) exit;
+    if (!isset($_POST['name']) || empty($_POST['name'])) fieldError("Name is missing", "name", $field_errors);
+    if (!isset($_POST['subject']) || empty($_POST['subject'])) fieldError("Subject is missing", "subject", $field_errors);
+    if (!isset($_POST['message']) || empty($_POST['message'])) fieldError("Message is missing", "message", $field_errors);
+    if (!isset($_POST['email_to']) || empty($_POST['email_to'])) fieldError("Email is missing", "email_to", $field_errors);
 
     $name = trim(filter_var($_POST['name'], FILTER_SANITIZE_STRING));
     $subject = trim(filter_var($_POST['subject'], FILTER_SANITIZE_STRING));
@@ -49,16 +29,16 @@ function validateSendMail()
     $email_to = trim(filter_var($_POST['email_to'], FILTER_SANITIZE_EMAIL));
     $email_from = trim(filter_var($_POST['email_from'], FILTER_SANITIZE_EMAIL));
 
-    if (!$_SESSION['errors']->email_to) {
-        if (!filter_var($email_to, FILTER_VALIDATE_EMAIL)) addError("Not a valid email address", "email_to");
+    if (!$field_errors->email_to) {
+        if (!filter_var($email_to, FILTER_VALIDATE_EMAIL)) fieldError("Not a valid email address", "email_to", $field_errors);
     }
 
-    if (count((array)$_SESSION['errors']) > 0) {
+    if (count((array)$field_errors) > 0) {
         $json = [
-            'field_errors' => $_SESSION['errors']
+            'field_errors' => $field_errors
         ];
         echo json_encode($json);
-        endSession();
+        exit;
     }
 
     $headers = "From: $name <$email_from>\r\n" .
@@ -90,7 +70,7 @@ function validateSendMail()
             ]
         ];
         echo json_encode($json);
-        endSession();
+        exit;
     }
     $json = [
         'global_status' => [
@@ -99,7 +79,7 @@ function validateSendMail()
         ]
     ];
     echo json_encode($json);
-    endSession();
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -109,18 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $exp = explode("/", $uri);
         $end = end($exp);
         $req = "/" . $end;
-        if (isset($_POST['uuid'])) {
-            session_id($_POST['uuid']);
-        }
-        session_start();
-
-        // Route: Generate new csrf-token
-        if ($req === "/token") generateToken();
 
         // Route: Validate security and send email
         if ($req === "/mail") validateSendMail();
-
-        // Route: Destroy active session
-        if ($req === "/end") endSession();
     }
 }

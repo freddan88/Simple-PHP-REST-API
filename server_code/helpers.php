@@ -26,5 +26,10 @@ function getDatetimeNow()
 
 function addError($message, $field)
 {
-    $_SESSION['errors'] -> $field = $message;
+    $_SESSION['errors']->$field = $message;
+}
+
+function fieldError($message, $field, $object)
+{
+    $object->$field = $message;
 }
