@@ -1,15 +1,14 @@
 <?php
 
 declare(strict_types=1);
-require_once('./app.conf.php');
+require_once('./config.php');
 require_once('./helpers.php');
 $current_origin = getRemote();
 
 if (in_array($current_origin, $ALLOWED_ORIGINS)) {
-    header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Allow-Origin: ' . $current_origin);
-    header("Access-Control-Allow-Headers: X-PINGOTHER, Content-Type");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type");
+    header("Access-Control-Allow-Methods: POST");
 } else {
     exit;
 }
@@ -86,7 +85,7 @@ function validateSendMail()
     if (!$email_status) {
         $json = [
             'global_status' => [
-                "message" => "Message failed to send",
+                "message" => "Email failed to send",
                 "success" => false
             ]
         ];
@@ -95,7 +94,7 @@ function validateSendMail()
     }
     $json = [
         'global_status' => [
-            "message" => "Message sent successfully",
+            "message" => "Email sent successfully",
             "success" => true
         ]
     ];
