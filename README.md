@@ -6,8 +6,8 @@
 
 ### There are two versions in this repository
 
--   [Version using csrv and sessions](#version-using-csrv)
--   [Version not using csrv and sessions](#version-not-using-csrv)
+-   [Version using csrf and sessions](#version-using-csrf)
+-   [Version not using csrf and sessions](#version-not-using-csrf)
 
 | My Links: |                                                               |
 | --------- | ------------------------------------------------------------- |
@@ -42,7 +42,7 @@
 
 ---
 
-## Version using csrv
+## Version using csrf
 
 ### Functionalities:
 
@@ -76,7 +76,7 @@
 -   [Secure Password Generator](https://passwordsgenerator.net)
 -   [Secure Password & Keygen Generator](https://randomkeygen.com)
 
-## Version not using csrv
+## Version not using csrf
 
 ### Functionalities:
 
