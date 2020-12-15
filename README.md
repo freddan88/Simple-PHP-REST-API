@@ -37,8 +37,8 @@
 
 ### Example code client (axios)
 
--   [Javascript client code using csrv](client_code/app_csrf.js)
--   [Javascript client code not using csrv](client_code/app.js)
+-   [Javascript client code using csrv](https://raw.githubusercontent.com/freddan88/simple-php-email-api/master/client_code/app_csrf.js)
+-   [Javascript client code not using csrv](https://raw.githubusercontent.com/freddan88/simple-php-email-api/master/client_code/app.js)
 
 ---
 
